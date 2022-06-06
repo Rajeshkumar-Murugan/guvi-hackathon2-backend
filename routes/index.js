@@ -367,7 +367,7 @@ client.close()
 })
 
 // Delete Request with ID
-router.delete('/movie/:id', async(req, res, next)=>{
+router.delete('/deleteMovie/:id', async(req, res, next)=>{
   const client = await MongoClient.connect(dbUrl)
   try {
     const db = await client.db(dbName)
