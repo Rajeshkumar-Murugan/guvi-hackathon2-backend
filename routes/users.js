@@ -1,11 +1,12 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
+
 var nodemailer = require('nodemailer');
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'testingforweb01@gmail.com',
-    pass: 'Password!23'
+    pass: 'xkzddveshwhrumxm'
   }
 });
 
@@ -36,10 +37,43 @@ router.post('/register', async(req, res, next)=> {
     const db =await client.db(dbName);
     let user = await db.collection('auth').findOne({email:req.body.email})
     if(user){
-      res.json({
-        message:"User already exist/Account is not activated"
-        
+      if(user.verify == 'N'){
+         res.json({
+        message:"Account is not activated. Please check your mail to verify your account",
       })
+
+        const token = await createJWT({email:req.body.email})
+      
+        console.log("Token"+token)
+
+      var mailOptions = {
+        from: 'testingforweb01@gmail.com',
+        to: user.email,
+        subject: 'Verification token',
+        html: `
+        <center>
+        <img src="https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png" style="width: 200px"><br/>
+       <a href ="http://localhost:4000/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
+       <br/>
+       <b>Note: <b><p>Link will be valid only for 5mins</p>
+       </center>
+        `                
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+
+      });   
+      }
+      else{
+        res.json({
+          message:"User already exist" 
+        })
+      }
     }
     else{
       const hash = await hashing(req.body.password);
@@ -56,17 +90,26 @@ router.post('/register', async(req, res, next)=> {
       let document = await db.collection('auth').insertOne(account);
       const token = await createJWT({email:req.body.email})
       
+      
+
       var mailOptions = {
         from: 'testingforweb01@gmail.com',
         to: account.email,
         subject: 'Verification token',
-        html: ` 
-          <form action="https://ticketbooking-server.herokuapp.com/users/verify-token/${token}" method="POST">
-          <input type="submit" name="Click here" value="Click here"> to verify your email ID
-          </form>
+        html: `
+        <center>
+
+        <img src="https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png" style="width: 200px"><br/>
+       <a href ="http://localhost:4000/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
+       <br/>
+       <b>Note: <b><p>Link will be valid only for 5mins</p>
+       </center>
+
         `                
       };
       
+
+
       transporter.sendMail(mailOptions, function(error, info){
         if (error) {
           console.log(error);
@@ -95,22 +138,56 @@ router.post('/login', async(req, res)=>{
     const db =await client.db(dbName);
     let user = await db.collection('auth').findOne({email:req.body.email})
 // check if user is available
-    if(user && user.verify == 'Y'){
-      const compare = await hashcompare(req.body.password,user.password);
-      if(compare===true){
-        res.json({
-          message:"Login successfully",
-          data:user
-        })}
+    if(user){
+      if(user.verify == 'Y'){
+        const compare = await hashcompare(req.body.password,user.password);
+        if(compare===true){
+          res.json({
+            message:"Login successfully",
+            data:user
+          })}
+        else{
+          res.json({
+            message:"Invalid password"
+          })
+          }
+      }
       else{
         res.json({
-          message:"Invalid password"
+          message:"Account is not activated. Please check your mail to verify your account",
         })
-        }
+  
+          const token = await createJWT({email:req.body.email})
+        
+          console.log("Token"+token)
+  
+        var mailOptions = {
+          from: 'testingforweb01@gmail.com',
+          to: user.email,
+          subject: 'Verification token',
+          html: `
+          <center>
+          <img src="https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png" style="width: 200px"><br/>
+         <a href ="http://localhost:4000/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
+         <br/>
+         <p><b>Note: </b>Link will be valid only for 5mins</p>
+         </center>
+          `                
+        };
+        
+        transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+  
+        });
+      }
       }
         else{
           res.json({
-            message:"User doesnot exist/Account Not verified"
+            message:"User doesnot exist"
           })
           }
 
@@ -123,7 +200,7 @@ router.post('/login', async(req, res)=>{
   }
 })
 
-router.post('/verify-token/:token', async(req, res)=>{
+router.get('/verify-token/:token', async(req, res)=>{
   const client = await MongoClient.connect(dbUrl)
 
   try {
@@ -135,17 +212,20 @@ router.post('/verify-token/:token', async(req, res)=>{
       const user = await db.collection('auth').updateOne({email:validity.email},{$set:{verify:'Y'}})
       res.send(`
       <center>
-            <img src='https://image.apktoy.com/img/2c/com.bt.bms/icon.png' alt='logo'/>
-            </center>
-            <h4>Email Verification<h4><br>
-     <p> Email verified successfully. Please <a href="https://priceless-ritchie-d27cd9.netlify.app/">Click here</a> to login</p>`);
+            <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px" alt='logo'/>
+            
+     <p> Email verified successfully. Please <a href="https://nostalgic-wozniak-8dd50b.netlify.app/">Click here</a> to login</p>
+     </center>
+     `);
+    
     }
   else{
     res.send(`
             <center>
-            <img src='https://image.apktoy.com/img/2c/com.bt.bms/icon.png' alt='logo'/>
+            <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px" alt='logo'/>
+            
+            <h4>Token Expired Please generate new token<h4>
             </center>
-            <h4>Token Expired successfully<h4>
   `);
   }
     
@@ -173,15 +253,15 @@ router.post('/forget-password', async(req, res)=>{
           subject: 'Password Reset Mail',
           html: ` 
           <center>
-            <img src='https://image.apktoy.com/img/2c/com.bt.bms/icon.png' alt='logo'/>
+            <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px" alt='logo'/>
+           
+            
+            <p> Please  
+            <a href ="http://localhost:4000/users/forget-password/link/${keyvalue}" method="get">Click Here</a> to set new password</p><br>
             </center>
-            <h4>Password Reset Link<h4><br>
-            <p> Please click confirm button to set new password</p><br>
-            <form action="https://ticketbooking-server.herokuapp.com/users/forget-password/link/${keyvalue}" method="POST">           
-            <input type="submit" name="Confirm" value="Confirm">
-            </form>
           ` };
         
+          
           transporter.sendMail(mailOptions, function(error, info){
             if (error) {
               console.log(error);
@@ -211,7 +291,7 @@ router.post('/forget-password', async(req, res)=>{
   }
 })
 
-router.post('/forget-password/link/:key', async(req, res)=>{
+router.get('/forget-password/link/:key', async(req, res)=>{
   const client = await MongoClient.connect(dbUrl)
 
   try {
@@ -306,15 +386,15 @@ router.post('/forget-password/link/:key', async(req, res)=>{
     </script>
 </head>
 <body>
-<form action="https://ticketbooking-server.herokuapp.com/users/forget-password/update/${keys}", method="POST" style="max-width:500px;margin:auto">
+<form action="https://modelprintingserver.herokuapp.com/users/forget-password/update/${keys}", method="POST" style="max-width:500px;margin:auto">
 <center>
-<img src='https://image.apktoy.com/img/2c/com.bt.bms/icon.png' alt='logo'/>
+<img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px" alt='logo'/>
 </center>
   <!-- Title  -->
   <center>
       <h2><span class="fa-passwd-reset fa-stack"><i class="fa fa-undo fa-stack-2x"></i><i class="fa fa-lock fa-stack-1x"></i></span>Reset your Password<span class="fa-passwd-reset fa-stack"><i class="fa fa-undo fa-stack-2x"></i><i class="fa fa-lock fa-stack-1x"></i></span></h2>
   </center>
-  <!-- First InpuText  -->
+  <!-- First Input Text  -->
   <div class="input-container"><i class="fa fa-key icon"></i>
       <input class="input-field" id="password-1" type="password" placeholder="Type your new password" name="password" oninput='validate();'>
   </div>
@@ -338,9 +418,11 @@ router.post('/forget-password/link/:key', async(req, res)=>{
   else{
     res.send(`
     <center>
-    <img src='https://image.apktoy.com/img/2c/com.bt.bms/icon.png' alt='logo'/>
+    <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px" alt='logo'/>
+    
+    <p> Link is invalid, Please click on forget password again to generate new link</p>
     </center>
-    <p> Link is invalid, Please click on forget password again to generate new link</p>`)
+    `)
   }
   res.send(hash)
   } 
@@ -368,16 +450,20 @@ router.post('/forget-password/update/:key', async(req, res)=>{
         let Verified = await db.collection('auth').updateOne({email:keycheck.email},{$set:{password:hash}})
         res.send(`
         <center>
-        <img src='https://image.apktoy.com/img/2c/com.bt.bms/icon.png' alt='logo'/>
+        <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px" alt='logo'/>
+        
+        <p>Password updated Successfully, Please <a href="https://nostalgic-wozniak-8dd50b.netlify.app/">Click Here</a> to login</p>
         </center>
-        <p>Password updated Successfully, Please <a href="https://priceless-ritchie-d27cd9.netlify.app/">Click Here</a> to login</p>`)                   
+        `)                   
   }
   else{
         res.send(`
         <center>
-        <img src='https://image.apktoy.com/img/2c/com.bt.bms/icon.png' alt='logo'/>
-        </center>
+        <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px" alt='logo'/>
+        
         Key is invalid, please click forget password link again to generate new key
+        </center>
+
         `)
   }
   
@@ -394,7 +480,7 @@ router.put('/reset-password', async(req, res)=>{
   const client = await MongoClient.connect(dbUrl)
 
   try {
-    const db =await client.db('FSD');
+    const db =await client.db(dbName);
     let user = await db.collection('auth').findOne({email:req.body.email})
 
     if(user){
@@ -426,6 +512,42 @@ router.put('/reset-password', async(req, res)=>{
   finally{
     client.close()
   }
+})
+
+router.post('/Message', async(req, res)=>{
+  try{
+   
+        var mailOptions = {
+          from: req.body.email,
+          to: 'testingforweb01@gmail.com',
+          subject: 'Mail from client',
+          html: ` 
+          <center>
+          <p>Name: ${req.body.name}</p>
+          <p>Email: ${req.body.email}</p>
+          <p>Mobile: ${req.body.mobile}</p>
+          <p>Message: ${req.body.message}</p>
+          <p>Address: ${req.body.address}</p>
+
+          </center>
+          ` };
+        
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+              res.json({
+                message:"Message sent"
+              })
+            }
+          });
+  } 
+  catch (error) {
+    res.send(error);
+  }
+  
 })
 
 // Authcodes ends
