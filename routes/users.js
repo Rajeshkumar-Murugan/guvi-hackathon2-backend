@@ -214,7 +214,7 @@ router.get('/verify-token/:token', async(req, res)=>{
       <center>
             <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px" alt='logo'/>
             
-     <p> Email verified successfully. Please <a href="https://nostalgic-wozniak-8dd50b.netlify.app/">Click here</a> to login</p>
+     <p> Email verified successfully. Please <a href="https://priceless-ritchie-d27cd9.netlify.app/">Click here</a> to login</p>
      </center>
      `);
     
@@ -452,7 +452,7 @@ router.post('/forget-password/update/:key', async(req, res)=>{
         <center>
         <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px" alt='logo'/>
         
-        <p>Password updated Successfully, Please <a href="https://nostalgic-wozniak-8dd50b.netlify.app/">Click Here</a> to login</p>
+        <p>Password updated Successfully, Please <a href="https://priceless-ritchie-d27cd9.netlify.app/">Click Here</a> to login</p>
         </center>
         `)                   
   }
