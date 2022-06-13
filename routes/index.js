@@ -143,6 +143,29 @@ router.get('/movies', async(req, res, next)=>{
 
 });
 
+router.get('/GetTheater', async(req, res, next)=>{
+  const client = await MongoClient.connect(dbUrl)
+  try {
+    const db = await client.db(dbName)
+    let TheaterData = await db.collection('TheaterData').find().toArray()
+     res.json({
+       statusCode:200,
+       message:"Theater Data Fetched Sucessfully",
+       data: TheaterData
+     })
+
+  } catch (error) {
+    console.log(error)
+    res.json({
+      statusCode:500,
+      message:"Internal Server Error" 
+    })
+  }
+  finally{
+    client.close()
+  }
+
+});
 
 // Get Request with ID
 router.get('/:id', async(req, res, next)=>{
@@ -203,11 +226,13 @@ router.post('/',async(req, res)=>{
 
   try {
     const db = await client.db(dbName)
-    let business = await db.collection('business').findOne({thName:req.body.thName,thMovie:req.body.thMovie})
+    let business = await db.collection('business').findOne({thName:req.body.thName,thMovie:req.body.thMovie, screen:req.body.screen, thDate:req.body.thDate})
     if(business){
+      let Movie = await db.collection('business').findOneAndReplace({thName:req.body.thName},req.body
+        )
       res.json({
         statusCode:400,
-        message:"Theater Already Exists"
+        message:"Details Updated"
       })
     }
     else{
@@ -241,20 +266,11 @@ router.put('/',async(req, res)=>{
   try {
     const db = await client.db(dbName)
     
-    let business = await db.collection('business').findOneAndReplace({thName:req.body.thName},req.body
-    //   {
-    //     businessName:req.body.businessName,
-    //     email:req.body.email,
-    //     mobile:req.body.mobile,
-    //     address:req.body.address,
-    //     city:req.body.city,
-    //     state:req.body.state,
-    //     Zipcode:req.body.Zipcode,
-    // }
+    let Movie = await db.collection('business').findOneAndReplace({thName:req.body.thName},req.body
     )
     res.json({
       statusCode:200,
-      message:"Bussiness Edited Successfully"
+      message:"Movie Edited Successfully"
     })
     
    
@@ -334,6 +350,42 @@ client.close()
   }
 })
 
+router.post('/addtheater',async(req, res)=>{
+  const client = await MongoClient.connect(dbUrl)
+
+  try {
+    const db = await client.db(dbName)
+    let Theater = await db.collection('TheaterData').findOne({TheaterName:req.body.TheaterName, ScreenNames:req.body.ScreenNames})
+    if(Theater){
+      // if(res.data == req.body.ScreenNames){}
+      res.json({
+        statusCode:400,
+        message:"Theater Already Exists"
+      })
+    }
+    else{
+      const Theater =await db.collection('TheaterData').insertOne(req.body)
+      res.json({
+        statusCode:200,
+        message:"Theater added Sucessfully",
+        data:Theater
+      })
+
+    }
+  } catch (error) {
+    console.log(error)
+    res.json({
+      statusCode:500,
+      message:"Internal Server Error" 
+    })
+    
+  }
+  finally{
+client.close()
+
+  }
+})
+
 
 // Put Request with ID
 router.put('/editmovie',async(req, res)=>{
@@ -367,14 +419,14 @@ client.close()
 })
 
 // Delete Request with ID
-router.delete('/deleteMovie/:id', async(req, res, next)=>{
+router.delete('/deleteTheater/:id', async(req, res, next)=>{
   const client = await MongoClient.connect(dbUrl)
   try {
     const db = await client.db(dbName)
-    let business = await db.collection('moviesdata').deleteOne({_id:mongodb.ObjectId(req.params.id)})
+    let model = await db.collection('business').deleteOne({_id:mongodb.ObjectId(req.params.id)})
      res.json({
        statusCode:200,
-       message:"Movie Deleted Sucessfully",
+       message:"Model Deleted Sucessfully",
      })
 
   } catch (error) {
@@ -387,7 +439,6 @@ router.delete('/deleteMovie/:id', async(req, res, next)=>{
   finally{
     client.close()
   }
-
 });
 
 
