@@ -447,10 +447,10 @@ router.post('/forget-password/update/:key', async(req, res)=>{
     {
         const hash = await hashing( req.body.password)
         req.body.password = hash;  
-        let Verified = await db.collection('auth').updateOne({email:keycheck.email},{$set:{password:hash}})
+        let Verified = await db.collection('auth').updateOne({email:keycheck.email},{$set:{password:hash}},{$unset:{key:""}})
         res.send(`
         <center>
-        <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' alt='logo'/>
+        <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px"  alt='logo'/>
         
         <p>Password updated Successfully, Please <a href="https://priceless-ritchie-d27cd9.netlify.app/">Click Here</a> to login</p>
         </center>
@@ -459,7 +459,7 @@ router.post('/forget-password/update/:key', async(req, res)=>{
   else{
         res.send(`
         <center>
-        <img src='https://media.baamboozle.com/uploads/images/488165/1634770703_15917_gif-url.gif' alt='logo'/>
+        <img src='https://media.baamboozle.com/uploads/images/488165/1634770703_15917_gif-url.gif' style="width: 200px"  alt='logo'/>
         </center>
         Key is invalid, please click forget password link again to generate new key
         `)
