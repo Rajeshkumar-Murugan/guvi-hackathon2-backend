@@ -447,7 +447,8 @@ router.post('/forget-password/update/:key', async(req, res)=>{
     {
         const hash = await hashing( req.body.password)
         req.body.password = hash;  
-        let Verified = await db.collection('auth').updateOne({email:keycheck.email},{$set:{password:hash}},{$unset:{key:""}})
+        let Verified = await db.collection('auth').updateOne({email:keycheck.email},{$set:{password:hash}})
+        let removekey = await db.collection('auth').updateOne({email:keycheck.email},{$unset:{key:""}})
         res.send(`
         <center>
         <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px"  alt='logo'/>
