@@ -53,7 +53,7 @@ router.post('/register', async(req, res, next)=> {
         html: `
         <center>
         <img src="https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png" style="width: 200px"><br/>
-       <a href ="http://localhost:4000/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
+       <a href ="https://ticketbooking-server.herokuapp.com/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
        <br/>
        <b>Note: <b><p>Link will be valid only for 5mins</p>
        </center>
@@ -100,7 +100,7 @@ router.post('/register', async(req, res, next)=> {
         <center>
 
         <img src="https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png" style="width: 200px"><br/>
-       <a href ="http://localhost:4000/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
+       <a href ="https://ticketbooking-server.herokuapp.com/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
        <br/>
        <b>Note: <b><p>Link will be valid only for 5mins</p>
        </center>
@@ -168,7 +168,7 @@ router.post('/login', async(req, res)=>{
           html: `
           <center>
           <img src="https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png" style="width: 200px"><br/>
-         <a href ="http://localhost:4000/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
+         <a href ="https://ticketbooking-server.herokuapp.com/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
          <br/>
          <p><b>Note: </b>Link will be valid only for 5mins</p>
          </center>
@@ -257,7 +257,7 @@ router.post('/forget-password', async(req, res)=>{
            
             
             <p> Please  
-            <a href ="http://localhost:4000/users/forget-password/link/${keyvalue}" method="get">Click Here</a> to set new password</p><br>
+            <a href ="https://ticketbooking-server.herokuapp.com/users/forget-password/link/${keyvalue}" method="get">Click Here</a> to set new password</p><br>
             </center>
           ` };
         
@@ -386,7 +386,7 @@ router.get('/forget-password/link/:key', async(req, res)=>{
     </script>
 </head>
 <body>
-<form action="https://modelprintingserver.herokuapp.com/users/forget-password/update/${keys}", method="POST" style="max-width:500px;margin:auto">
+<form action="https://ticketbooking-server.herokuapp.com/users/forget-password/update/${keys}", method="POST" style="max-width:500px;margin:auto">
 <center>
 <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px" alt='logo'/>
 </center>
@@ -450,7 +450,7 @@ router.post('/forget-password/update/:key', async(req, res)=>{
         let Verified = await db.collection('auth').updateOne({email:keycheck.email},{$set:{password:hash}})
         res.send(`
         <center>
-        <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px" alt='logo'/>
+        <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' alt='logo'/>
         
         <p>Password updated Successfully, Please <a href="https://priceless-ritchie-d27cd9.netlify.app/">Click Here</a> to login</p>
         </center>
@@ -459,11 +459,9 @@ router.post('/forget-password/update/:key', async(req, res)=>{
   else{
         res.send(`
         <center>
-        <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px" alt='logo'/>
-        
-        Key is invalid, please click forget password link again to generate new key
+        <img src='https://media.baamboozle.com/uploads/images/488165/1634770703_15917_gif-url.gif' alt='logo'/>
         </center>
-
+        Key is invalid, please click forget password link again to generate new key
         `)
   }
   
