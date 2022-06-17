@@ -424,7 +424,7 @@ router.get('/forget-password/link/:key', async(req, res)=>{
     </center>
     `)
   }
-  res.send(hash)
+
   } 
   catch (error) {
     res.send(error);
