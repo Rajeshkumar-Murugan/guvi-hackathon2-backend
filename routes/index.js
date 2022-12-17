@@ -312,8 +312,52 @@ router.delete('/:id', async(req, res, next)=>{
   }
 
 });
+router.delete('/deleteTheaterData/:id', async(req, res, next)=>{
+  const client = await MongoClient.connect(dbUrl)
+  try {
+    const db = await client.db(dbName)
+    let business = await db.collection('TheaterData').deleteOne({_id:mongodb.ObjectId(req.params.id)})
+     res.json({
+       statusCode:200,
+       message:"Business Deleted Sucessfully",
+     })
+
+  } catch (error) {
+    console.log(error)
+    res.json({
+      statusCode:500,
+      message:"Internal Server Error" 
+    })
+  }
+  finally{
+    client.close()
+  }
+
+});
 
 
+router.delete('/deleteMoviesData/:id', async(req, res, next)=>{
+  const client = await MongoClient.connect(dbUrl)
+  try {
+    const db = await client.db(dbName)
+    let business = await db.collection('moviesdata').deleteOne({_id:mongodb.ObjectId(req.params.id)})
+     res.json({
+       statusCode:200,
+       message:"Business Deleted Sucessfully",
+     })
+
+  } catch (error) {
+    console.log(error)
+    res.json({
+      statusCode:500,
+      message:"Internal Server Error" 
+    })
+  }
+  finally{
+    client.close()
+  }
+
+});
 //Movies set
 router.post('/addmovies',async(req, res)=>{
   const client = await MongoClient.connect(dbUrl)
