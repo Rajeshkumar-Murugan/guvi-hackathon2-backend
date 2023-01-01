@@ -53,7 +53,7 @@ router.post('/register', async(req, res, next)=> {
         html: `
         <center>
         <img src="https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png" style="width: 200px"><br/>
-       <a href ="https://ticketbooking-server.herokuapp.com/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
+       <a href ="https://bookmyshow-lmlo.onrender.com/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
        <br/>
        <b>Note: <b><p>Link will be valid only for 5mins</p>
        </center>
@@ -100,7 +100,7 @@ router.post('/register', async(req, res, next)=> {
         <center>
 
         <img src="https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png" style="width: 200px"><br/>
-       <a href ="https://ticketbooking-server.herokuapp.com/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
+       <a href ="https://bookmyshow-lmlo.onrender.com/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
        <br/>
        <b>Note: <b><p>Link will be valid only for 5mins</p>
        </center>
@@ -168,7 +168,7 @@ router.post('/login', async(req, res)=>{
           html: `
           <center>
           <img src="https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png" style="width: 200px"><br/>
-         <a href ="https://ticketbooking-server.herokuapp.com/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
+         <a href ="https://bookmyshow-lmlo.onrender.com/users/verify-token/${token}" method="get">Click Here</a> to verify your account.
          <br/>
          <p><b>Note: </b>Link will be valid only for 5mins</p>
          </center>
@@ -257,7 +257,7 @@ router.post('/forget-password', async(req, res)=>{
            
             
             <p> Please  
-            <a href ="https://ticketbooking-server.herokuapp.com/users/forget-password/link/${keyvalue}" method="get">Click Here</a> to set new password</p><br>
+            <a href ="https://bookmyshow-lmlo.onrender.com/users/forget-password/link/${keyvalue}" method="get">Click Here</a> to set new password</p><br>
             </center>
           ` };
         
@@ -386,7 +386,7 @@ router.get('/forget-password/link/:key', async(req, res)=>{
     </script>
 </head>
 <body>
-<form action="https://ticketbooking-server.herokuapp.com/users/forget-password/update/${keys}", method="POST" style="max-width:500px;margin:auto">
+<form action="https://bookmyshow-lmlo.onrender.com/users/forget-password/update/${keys}", method="POST" style="max-width:500px;margin:auto">
 <center>
 <img src='https://www.nextbigbrand.in/wp-content/uploads/2019/07/bookmyshow.png' style="width: 200px" alt='logo'/>
 </center>
